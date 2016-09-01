@@ -7,6 +7,7 @@
     "Microsoft.AspNet.WebApi.Owin": "5.2.3",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
     "Microsoft.AspNetCore.Hosting": "1.0.0",
+    "Microsoft.AspNetCore.Mvc": "1.0.0",
     "Microsoft.AspNetCore.Owin": "1.0.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",

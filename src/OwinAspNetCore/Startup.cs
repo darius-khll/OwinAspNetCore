@@ -18,11 +18,13 @@ namespace OwinAspNetCore
     {
         public void ConfigureServices(IServiceCollection services)
         {
-
+            //services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder aspNetCoreApp, IHostingEnvironment env)
         {
+            //aspNetCoreApp.UseMvc();
+
             aspNetCoreApp.UseOwinApp(owinApp =>
             {
                 if (env.IsDevelopment())

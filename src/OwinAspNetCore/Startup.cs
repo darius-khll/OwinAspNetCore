@@ -6,6 +6,8 @@ using Microsoft.Owin;
 using Owin;
 using System;
 using Microsoft.Owin.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace OwinAspNetCore
 {
@@ -35,10 +37,12 @@ namespace OwinAspNetCore
                 // owinApp.UseFileServer(); as like as asp.net core static files middleware
                 // owinApp.UseStaticFiles(); as like as asp.net core static files middleware
                 // owinApp.UseWebApi(); asp.net web api / odata / web hooks
-                // owinApp.MapSignalR();
+                owinApp.MapSignalR();
 
-                owinApp.Use<AddSampleHeaderToResponseHeadersOwinMiddleware>();
+                //owinApp.Use<AddSampleHeaderToResponseHeadersOwinMiddleware>();
             });
+
+            //aspNetCoreApp.UseMiddleware<AddSampleHeaderToResponseHeadersAspNetCoreMiddlware>();
         }
     }
 
@@ -55,6 +59,25 @@ namespace OwinAspNetCore
             //throw new InvalidOperationException("ErrorTest");
 
             //context.Response.Headers.Add("Test", new[] { context.Request.Uri.ToString() });
+
+            await Next.Invoke(context);
+        }
+    }
+
+    public class AddSampleHeaderToResponseHeadersAspNetCoreMiddlware
+    {
+        private readonly RequestDelegate Next;
+
+        public AddSampleHeaderToResponseHeadersAspNetCoreMiddlware(RequestDelegate next)
+        {
+            Next = next;
+        }
+
+        public async Task Invoke(HttpContext context)
+        {
+            //throw new InvalidOperationException("ErrorTest");
+
+            //context.Response.Headers.Add("Test", new[] { context.Request.Path.ToString() });
 
             await Next.Invoke(context);
         }

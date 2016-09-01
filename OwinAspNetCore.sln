@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9BC5AC7E-5B19-476E-90EA-393D7FD3C295}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5FDB95B6-171A-4D8D-9CCB-045FFF92A512}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "OwinAspNetCore", "src\OwinAspNetCore\OwinAspNetCore.xproj", "{75CBF0BE-BDD8-4182-83AC-80C0B394FA59}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75CBF0BE-BDD8-4182-83AC-80C0B394FA59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75CBF0BE-BDD8-4182-83AC-80C0B394FA59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75CBF0BE-BDD8-4182-83AC-80C0B394FA59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75CBF0BE-BDD8-4182-83AC-80C0B394FA59}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{75CBF0BE-BDD8-4182-83AC-80C0B394FA59} = {9BC5AC7E-5B19-476E-90EA-393D7FD3C295}
+	EndGlobalSection
+EndGlobal

@@ -8,6 +8,9 @@ using System;
 using Microsoft.Owin.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Web.OData.Builder;
+using System.Web.Http;
+using System.Web.OData.Extensions;
 
 namespace OwinAspNetCore
 {
@@ -37,6 +40,16 @@ namespace OwinAspNetCore
                 // owinApp.UseFileServer(); as like as asp.net core static files middleware
                 // owinApp.UseStaticFiles(); as like as asp.net core static files middleware
                 // owinApp.UseWebApi(); asp.net web api / odata / web hooks
+
+                HttpConfiguration webApiConfig = new HttpConfiguration();
+                ODataModelBuilder odataMetadataBuilder = new ODataConventionModelBuilder();
+                odataMetadataBuilder.EntitySet<Product>("Products");
+                webApiConfig.MapODataServiceRoute(
+                    routeName: "ODataRoute",
+                    routePrefix: "odata",
+                    model: odataMetadataBuilder.GetEdmModel());
+                owinApp.UseWebApi(webApiConfig);
+
                 owinApp.MapSignalR();
 
                 //owinApp.Use<AddSampleHeaderToResponseHeadersOwinMiddleware>();

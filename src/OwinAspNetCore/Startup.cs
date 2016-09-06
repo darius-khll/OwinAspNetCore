@@ -14,12 +14,12 @@ namespace OwinAspNetCore
     {
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder aspNetCoreApp)
         {
-            //aspNetCoreApp.UseMvc();            
+            aspNetCoreApp.UseMvc();
 
             aspNetCoreApp.UseOwinApp(owinApp =>
             {

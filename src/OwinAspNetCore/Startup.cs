@@ -7,17 +7,36 @@ using Microsoft.AspNetCore.Http;
 using System.Web.OData.Builder;
 using System.Web.Http;
 using System.Web.OData.Extensions;
+using Microsoft.AspNetCore.Hosting;
+using Autofac;
+using System;
+using Autofac.Extensions.DependencyInjection;
 
 namespace OwinAspNetCore
 {
     public class Startup
     {
-        public void ConfigureServices(IServiceCollection services)
+        public Startup(IHostingEnvironment env)
         {
-            services.AddMvc();
+
         }
 
-        public void Configure(IApplicationBuilder aspNetCoreApp)
+        public IContainer AutofacContainer { get; private set; }
+
+        public IServiceProvider ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc();
+
+            ContainerBuilder autofacContainerBuilder = new ContainerBuilder();
+
+            autofacContainerBuilder.RegisterType<SomeDependency>().As<ISomeDependency>();
+            autofacContainerBuilder.Populate(services);
+            AutofacContainer = autofacContainerBuilder.Build();
+
+            return new AutofacServiceProvider(AutofacContainer);
+        }
+
+        public void Configure(IApplicationBuilder aspNetCoreApp, IApplicationLifetime appLifetime)
         {
             aspNetCoreApp.UseMvc();
 
@@ -44,6 +63,8 @@ namespace OwinAspNetCore
             });
 
             aspNetCoreApp.UseMiddleware<SampleAspNetCoreMiddleware>();
+
+            appLifetime.ApplicationStopped.Register(() => this.AutofacContainer.Dispose());
         }
     }
 

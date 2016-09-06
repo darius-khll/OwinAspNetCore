@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "Autofac.Extensions.DependencyInjection": "4.0.0",
+    "Autofac.Owin": "4.0.0",
+    "Autofac.WebApi2.Owin": "4.0.0",
     "Microsoft.AspNet.OData": "5.9.1",
     "Microsoft.AspNet.SignalR": "2.2.1",
     "Microsoft.AspNet.WebApi.Client": "5.2.3",

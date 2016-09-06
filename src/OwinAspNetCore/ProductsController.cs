@@ -6,6 +6,11 @@ namespace OwinAspNetCore
 {
     public class ProductsController : ODataController
     {
+        public ProductsController(ISomeDependency someDependency)
+        {
+
+        }
+
         [EnableQuery]
         public IQueryable<Product> Get()
         {

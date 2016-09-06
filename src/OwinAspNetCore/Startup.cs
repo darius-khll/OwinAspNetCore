@@ -1,13 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Owin;
 using Owin;
-using System;
-using Microsoft.Owin.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using System.Web.OData.Builder;
 using System.Web.Http;
 using System.Web.OData.Extensions;
@@ -18,52 +14,42 @@ namespace OwinAspNetCore
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddMvc();
+
         }
 
-        public void Configure(IApplicationBuilder aspNetCoreApp, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder aspNetCoreApp)
         {
-            //aspNetCoreApp.UseMvc();
+            //aspNetCoreApp.UseMvc();            
 
             aspNetCoreApp.UseOwinApp(owinApp =>
             {
-                if (env.IsDevelopment())
-                {
-                    owinApp.UseErrorPage(new ErrorPageOptions()
-                    {
-                        ShowCookies = true,
-                        ShowEnvironment = true,
-                        ShowExceptionDetails = true,
-                        ShowHeaders = true,
-                        ShowQuery = true,
-                        ShowSourceCode = true
-                    });
-                }
-                // owinApp.UseFileServer(); as like as asp.net core static files middleware
-                // owinApp.UseStaticFiles(); as like as asp.net core static files middleware
                 // owinApp.UseWebApi(); asp.net web api / odata / web hooks
 
                 HttpConfiguration webApiConfig = new HttpConfiguration();
+
                 ODataModelBuilder odataMetadataBuilder = new ODataConventionModelBuilder();
+
                 odataMetadataBuilder.EntitySet<Product>("Products");
+
                 webApiConfig.MapODataServiceRoute(
                     routeName: "ODataRoute",
                     routePrefix: "odata",
                     model: odataMetadataBuilder.GetEdmModel());
+
                 owinApp.UseWebApi(webApiConfig);
 
-                owinApp.MapSignalR();
+                //owinApp.MapSignalR();
 
-                //owinApp.Use<AddSampleHeaderToResponseHeadersOwinMiddleware>();
+                owinApp.Use<SampleOwinMiddleware>();
             });
 
-            //aspNetCoreApp.UseMiddleware<AddSampleHeaderToResponseHeadersAspNetCoreMiddlware>();
+            aspNetCoreApp.UseMiddleware<SampleAspNetCoreMiddleware>();
         }
     }
 
-    public class AddSampleHeaderToResponseHeadersOwinMiddleware : OwinMiddleware
+    public class SampleOwinMiddleware : OwinMiddleware
     {
-        public AddSampleHeaderToResponseHeadersOwinMiddleware(OwinMiddleware next)
+        public SampleOwinMiddleware(OwinMiddleware next)
             : base(next)
         {
 
@@ -71,29 +57,28 @@ namespace OwinAspNetCore
 
         public async override Task Invoke(IOwinContext context)
         {
-            //throw new InvalidOperationException("ErrorTest");
+            // You've access to asp.net core http context in your owin middlewares, asp.net web api odata controllers, signalr hubs, etc.
 
-            //context.Response.Headers.Add("Test", new[] { context.Request.Uri.ToString() });
+            HttpContext aspNetCoreContext = (HttpContext)context.Environment["Microsoft.AspNetCore.Http.HttpContext"];
+
+            // do what ever you want using context.Request & context.Response
 
             await Next.Invoke(context);
         }
     }
 
-    public class AddSampleHeaderToResponseHeadersAspNetCoreMiddlware
+    public class SampleAspNetCoreMiddleware
     {
         private readonly RequestDelegate Next;
 
-        public AddSampleHeaderToResponseHeadersAspNetCoreMiddlware(RequestDelegate next)
+        public SampleAspNetCoreMiddleware(RequestDelegate next)
         {
             Next = next;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            //throw new InvalidOperationException("ErrorTest");
-
-            //context.Response.Headers.Add("Test", new[] { context.Request.Path.ToString() });
-
+            // do what ever you want using context.Request & context.Response
             await Next.Invoke(context);
         }
     }

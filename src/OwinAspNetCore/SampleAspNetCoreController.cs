@@ -5,9 +5,11 @@ namespace OwinAspNetCore
     [Route("api/[controller]")]
     public class SampleAspNetCoreController : Controller
     {
+        private ISomeDependency _someDependency;
+
         public SampleAspNetCoreController(ISomeDependency someDependency)
         {
-
+            _someDependency = someDependency;
         }
 
         [HttpGet("GetValues")]

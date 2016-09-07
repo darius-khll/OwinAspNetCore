@@ -14,6 +14,8 @@ using Autofac.Extensions.DependencyInjection;
 using Autofac.Integration.Owin;
 using System.Reflection;
 using Autofac.Integration.WebApi;
+using Autofac.Integration.SignalR;
+using Microsoft.AspNet.SignalR;
 
 namespace OwinAspNetCore
 {
@@ -27,6 +29,7 @@ namespace OwinAspNetCore
 
             ContainerBuilder autofacContainerBuilder = new ContainerBuilder();
             autofacContainerBuilder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+            autofacContainerBuilder.RegisterHubs(Assembly.GetExecutingAssembly());
             autofacContainerBuilder.RegisterType<SomeDependency>().As<ISomeDependency>().InstancePerLifetimeScope();
             autofacContainerBuilder.Populate(services);
             AutofacContainer = autofacContainerBuilder.Build();
@@ -50,23 +53,29 @@ namespace OwinAspNetCore
 
                 // owinApp.UseWebApi(); asp.net web api / odata / web hooks
 
-                HttpConfiguration webApiConfig = new HttpConfiguration();
+                owinApp.Map("/odata", innerOwinApp => // you can use owin middleware branching as like as asp.net core middlewares branching
+                {
+                    HttpConfiguration webApiConfig = new HttpConfiguration();
 
-                webApiConfig.DependencyResolver = new AutofacWebApiDependencyResolver(AutofacContainer);
+                    webApiConfig.DependencyResolver = new AutofacWebApiDependencyResolver(AutofacContainer);
 
-                ODataModelBuilder odataMetadataBuilder = new ODataConventionModelBuilder();
+                    ODataModelBuilder odataMetadataBuilder = new ODataConventionModelBuilder();
 
-                odataMetadataBuilder.EntitySet<Product>("Products");
+                    odataMetadataBuilder.EntitySet<Product>("Products");
 
-                webApiConfig.MapODataServiceRoute(
-                    routeName: "ODataRoute",
-                    routePrefix: "odata",
-                    model: odataMetadataBuilder.GetEdmModel());
+                    webApiConfig.MapODataServiceRoute(
+                        routeName: "ODataRoute",
+                        routePrefix: "", /*no odata anymore because we're in odata branch of owin requests, see owinApp.Map method*/
+                        model: odataMetadataBuilder.GetEdmModel());
 
-                owinApp.UseAutofacWebApi(webApiConfig);
-                owinApp.UseWebApi(webApiConfig);
+                    innerOwinApp.UseAutofacWebApi(webApiConfig);
+                    innerOwinApp.UseWebApi(webApiConfig);
+                });
 
-                //owinApp.MapSignalR();
+                HubConfiguration signalRConfiguration = new HubConfiguration();
+                signalRConfiguration.Resolver = new AutofacDependencyResolver(AutofacContainer);
+                owinApp.MapSignalR("/signalr", signalRConfiguration); // MapSignalR uses owin branching internally.
+
             });
 
             appLifetime.ApplicationStopped.Register(() => AutofacContainer.Dispose());

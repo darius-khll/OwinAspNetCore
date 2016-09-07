@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using OwinAspNetCore.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.OData;
 
-namespace OwinAspNetCore
+namespace OwinAspNetCore.Controllers
 {
     public class ProductsController : ODataController
     {

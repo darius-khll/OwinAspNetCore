@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace OwinAspNetCore
+namespace OwinAspNetCore.Controllers
 {
     [Route("api/[controller]")]
     public class SampleAspNetCoreController : Controller

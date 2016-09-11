@@ -1,6 +1,8 @@
 ﻿using OwinAspNetCore.Models;
-using System.Collections.Generic;
+using System;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.OData;
@@ -9,19 +11,21 @@ namespace OwinAspNetCore.Controllers
 {
     public class ProductsController : ODataController
     {
-        
+        ContextDb db = new ContextDb();
         public ProductsController(ISomeDependency someDependency)
         {
-
         }
 
         [EnableQuery]
         public IQueryable<Product> Get()
         {
-            return new List<Product>
-            {
-                 new Product { Id = 1, Name = "Test" , Price = 10 }
-            }.AsQueryable();
+            return db.Products;
+        }
+        [EnableQuery]
+        public SingleResult<Product> Get([FromODataUri] int key)
+        {
+            IQueryable<Product> result = db.Products.Where(p => p.Id == key);
+            return SingleResult.Create(result);
         }
 
         public async Task<IHttpActionResult> Post(Product product)
@@ -30,12 +34,11 @@ namespace OwinAspNetCore.Controllers
             {
                 return BadRequest(ModelState);
             }
-            //db.Products.Add(product); //if use Ef
-            //await db.SaveChangesAsync();
+            db.Products.Add(product);
+            await db.SaveChangesAsync();
             return Created(product);
         }
 
-        /*
         public async Task<IHttpActionResult> Patch([FromODataUri] int key, Delta<Product> product)
         {
             if (!ModelState.IsValid)
@@ -52,7 +55,7 @@ namespace OwinAspNetCore.Controllers
             {
                 await db.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ProductExists(key))
                 {
@@ -80,7 +83,7 @@ namespace OwinAspNetCore.Controllers
             {
                 await db.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception)
             {
                 if (!ProductExists(key))
                 {
@@ -105,6 +108,15 @@ namespace OwinAspNetCore.Controllers
             await db.SaveChangesAsync();
             return StatusCode(HttpStatusCode.NoContent);
         }
-        */
+
+        private bool ProductExists(int key)
+        {
+            return db.Products.Any(p => p.Id == key);
+        }
+        protected override void Dispose(bool disposing)
+        {
+            db.Dispose();
+            base.Dispose(disposing);
+        }
     }
 }

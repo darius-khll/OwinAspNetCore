@@ -12,6 +12,7 @@ namespace OwinAspNetCore
 {
     public static class OwinExtensions
     {
+        //Extension method added to IApplicationBuilder
         public static IApplicationBuilder UseOwinApp(
             this IApplicationBuilder aspNetCoreApp,
             Action<IAppBuilder> configuration)

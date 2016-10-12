@@ -61,6 +61,7 @@ namespace OwinAspNetCore
 
                     odataMetadataBuilder.EntitySet<Product>("Products");
 
+                    //odata config latest version has been a little changed
                     webApiConfig.MapODataServiceRoute(
                         routeName: "ODataRoute",
                         routePrefix: "", /*no odata anymore because we're in odata branch of owin requests, see owinApp.Map method*/

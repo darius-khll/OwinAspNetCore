@@ -59,7 +59,14 @@ namespace OwinAspNetCore
 
                     ODataModelBuilder odataMetadataBuilder = new ODataConventionModelBuilder();
 
-                    odataMetadataBuilder.EntitySet<Product>("Products");
+                    odataMetadataBuilder.Namespace = odataMetadataBuilder.ContainerName = "testNameSpace";
+
+                    var products = odataMetadataBuilder.EntitySet<Product>("Products");
+                    var testFunction = products.EntityType.Collection.Function("TestFunction");
+                    testFunction.Parameter<int>("Val");
+                    testFunction.Parameter<string>("Name");
+                    testFunction.Returns(typeof(int));
+                    ///odata/Products/testNameSpace.TestFunction(Val=1, Name='a')
 
                     //odata config latest version has been a little changed
                     webApiConfig.MapODataServiceRoute(

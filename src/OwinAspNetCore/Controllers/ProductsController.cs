@@ -1,5 +1,6 @@
 ﻿using OwinAspNetCore.Models;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -16,10 +17,17 @@ namespace OwinAspNetCore.Controllers
         {
         }
 
+        [HttpGet]
+        public int TestFunction(int Val, string Name)
+        {
+            return 222;
+        }
+
         [EnableQuery]
         public IQueryable<Product> Get()
         {
-            return db.Products;
+            return new List<Product>() { new Product { Id = 1, Name = "nnn", Price = 2 }, new Product { Id = 2, Name = "aaa", Price = 2 } }.AsQueryable();
+            //return db.Products;
         }
         [EnableQuery]
         public SingleResult<Product> Get([FromODataUri] int key)

@@ -66,7 +66,10 @@ namespace OwinAspNetCore
                     testFunction.Parameter<int>("Val");
                     testFunction.Parameter<string>("Name");
                     testFunction.Returns(typeof(int));
-                    ///odata/Products/testNameSpace.TestFunction(Val=1, Name='a')
+                    
+                    //testFunction.ReturnsCollection<string>();
+                    //testFunction.ReturnsCollectionFromEntitySet<Product>("Products");
+                    //odata/Products/testNameSpace.TestFunction(Val=1, Name='a')
 
                     //odata config latest version has been a little changed
                     webApiConfig.MapODataServiceRoute(

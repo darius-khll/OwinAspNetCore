@@ -66,7 +66,8 @@ namespace OwinAspNetCore
                     testFunction.Parameter<int>("Val");
                     testFunction.Parameter<string>("Name");
                     testFunction.Returns(typeof(int));
-                    
+
+                    //testFunction.ReturnsFromEntitySet<Product>("Products");
                     //testFunction.ReturnsCollection<string>();
                     //testFunction.ReturnsCollectionFromEntitySet<Product>("Products");
                     //odata/Products/testNameSpace.TestFunction(Val=1, Name='a')
